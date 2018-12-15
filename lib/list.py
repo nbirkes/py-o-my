@@ -30,3 +30,5 @@ del sopranos[0]
 print(sopranos)
 
 print("You probably don't even hear it when it happens, right?")
+
+sopranos.clear()
