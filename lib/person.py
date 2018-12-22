@@ -13,3 +13,6 @@ class Person:
 
     def full_name(self):
         return self.first_name + ' ' + self.last_name
+
+    def tells(self, person, message):
+        print(self.first_name + ' says: ' + person.first_name + ' ' + message)
