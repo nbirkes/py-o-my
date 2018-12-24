@@ -5,24 +5,34 @@ import os
 
 keypad = {
     1: (),
-    2: ('a', 'b', 'c'),
-    3: ('d', 'e', 'f'),
-    4: ('g', 'h', 'i'),
-    5: ('j', 'k', 'l'),
-    6: ('m', 'n', 'o'),
-    7: ('p', 'q', 'r', 's'),
-    8: ('t', 'u', 'v'),
-    9: ('w', 'x', 'y', 'z'),
+    2: ('A', 'B', 'C'),
+    3: ('D', 'E', 'F'),
+    4: ('G', 'H', 'I'),
+    5: ('J', 'K', 'L'),
+    6: ('M', 'N', 'O'),
+    7: ('P', 'Q', 'R', 'S'),
+    8: ('T', 'U', 'V'),
+    9: ('W', 'X', 'Y', 'Z'),
 }
 
 
+class Possibility:
+    def __init__(self, phone, vanity):
+        self.phone = phone
+        self.vanity = vanity
+
+    def to_string(self):
+        return self.phone + self.vanity
+
+
 def main():
-    phone = input('What is your phone number?')
+    # phone = input('What is your phone number?')
+    phone = '2546447382'
     if not is_valid(phone):
         print('Phone number {phone} is invalid')
         return
 
-    print(phone)
+    get_possibilities(phone, [])
 
 
 def get_words():
@@ -30,13 +40,16 @@ def get_words():
     return words.read()
 
 
-def get_possibilities(phone):
-    possibilities = []
-    for c in phone:
-        for x in keypad[int(c)]:
-            print(x)
+def get_possibilities(phone, possibilities):
+    digit = phone[len(phone) - 1:len(phone)]
+    new_phone = phone[:len(phone) - 1]
 
-    return possibilities
+    for x in keypad[int(digit)]:
+        possibility = Possibility(new_phone, x)
+        possibilities.append(possibility)
+        print(possibility.to_string())
+
+    return get_possibilities(new_phone, possibilities)
 
 
 def is_valid(phone):
