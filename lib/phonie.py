@@ -16,40 +16,63 @@ keypad = {
 }
 
 
-class Possibility:
-    def __init__(self, phone, vanity):
-        self.phone = phone
-        self.vanity = vanity
-
-    def to_string(self):
-        return self.phone + self.vanity
-
-
 def main():
-    # phone = input('What is your phone number?')
-    phone = '2546447382'
+    phone = input('What is your phone number?')
+
     if not is_valid(phone):
-        print('Phone number {phone} is invalid')
+        print('Phone number %s is invalid' % phone)
         return
 
-    get_possibilities(phone, [])
+    poss = generate_possibilities(phone, 9, [])
+    words = get_words()
+    matches = get_matches(poss, words)
+
+    if len(matches) == 0:
+        print('Sorry, no matches found for', phone)
+    else:
+        print('MATCHES!')
+        for match in matches:
+            print('%s-%s-%s' % (phone[0:3], phone[3:6], match.upper()))
 
 
 def get_words():
-    words = open(os.path.dirname(os.path.abspath(__file__)) + '/static/words.txt')
-    return words.read()
+    return open(os.path.dirname(os.path.abspath(__file__)) + '/static/words.txt', 'r').read().split()
 
 
-def get_possibilities(phone, possibilities):
-    digit = phone[len(phone) - 1:len(phone)]
-    new_phone = phone[:len(phone) - 1]
+def generate_possibilities(phone, index, prev):
+    if index <= 5:
+        return prev
 
-    for x in keypad[int(digit)]:
-        possibility = Possibility(new_phone, x)
-        possibilities.append(possibility)
-        print(possibility.to_string())
+    digit = phone[index]
 
-    return get_possibilities(new_phone, possibilities)
+    if len(prev) == 0:
+        for char in keypad[int(digit)]:
+            prev.append(char)
+    else:
+        new_list = []
+
+        for p in prev:
+            for char in keypad[int(digit)]:
+                new_list.append(char + p)
+
+        prev = prev + new_list
+
+    return generate_possibilities(phone, index - 1, prev)
+
+
+def get_matches(possibilities, words):
+    matches = []
+
+    for p in possibilities:
+        if len(p) != 4:
+            continue
+
+        p = p.lower()
+
+        if p in words:
+            matches.append(p)
+
+    return matches
 
 
 def is_valid(phone):
