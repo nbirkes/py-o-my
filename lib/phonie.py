@@ -13,11 +13,13 @@ keypad = {
     7: ('P', 'Q', 'R', 'S'),
     8: ('T', 'U', 'V'),
     9: ('W', 'X', 'Y', 'Z'),
+    0: (),
 }
 
 
 def main():
-    phone = input('What is your phone number?')
+    # phone = input('What is your phone number?')
+    phone = '2546447382'
 
     if not is_valid(phone):
         print('Phone number %s is invalid' % phone)
@@ -27,20 +29,22 @@ def main():
     words = get_words()
     matches = get_matches(poss, words)
 
+    print('%s possibilities found' % len(poss))
+
     if len(matches) == 0:
         print('Sorry, no matches found for', phone)
     else:
         print('MATCHES!')
         for match in matches:
-            print('%s-%s-%s' % (phone[0:3], phone[3:6], match.upper()))
+            print(format_vanity(phone, match))
 
 
 def get_words():
-    return open(os.path.dirname(os.path.abspath(__file__)) + '/static/words.txt', 'r').read().split()
+    return open(os.path.dirname(os.path.abspath(__file__)) + '/static/words_2.txt', 'r').read().split()
 
 
 def generate_possibilities(phone, index, prev):
-    if index <= 5:
+    if index < 6:
         return prev
 
     digit = phone[index]
@@ -60,16 +64,17 @@ def generate_possibilities(phone, index, prev):
     return generate_possibilities(phone, index - 1, prev)
 
 
+def format_vanity(phone, vanity):
+    phone_part = phone[0: 10 - len(vanity)]
+    new_phone = phone_part + vanity
+    return '%s-%s-%s' % (new_phone[0:3], new_phone[3:6], new_phone[6:10].upper())
+
+
 def get_matches(possibilities, words):
     matches = []
 
     for p in possibilities:
-        if len(p) != 4:
-            continue
-
-        p = p.lower()
-
-        if p in words:
+        if p.lower() in words:
             matches.append(p)
 
     return matches
@@ -82,7 +87,7 @@ def is_valid(phone):
         except ValueError:
             return False
 
-    return True
+    return len(phone) == 10
 
 
 main()
