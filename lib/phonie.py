@@ -4,7 +4,7 @@ import os
 # Takes your phone nubmer and determines if a vanity phone nubmer is available
 
 keypad = {
-    1: (),
+    1: '1',
     2: ('A', 'B', 'C'),
     3: ('D', 'E', 'F'),
     4: ('G', 'H', 'I'),
@@ -13,13 +13,13 @@ keypad = {
     7: ('P', 'Q', 'R', 'S'),
     8: ('T', 'U', 'V'),
     9: ('W', 'X', 'Y', 'Z'),
-    0: (),
+    0: '0',
 }
 
 
 def main():
-    # phone = input('What is your phone number?')
-    phone = '2546447382'
+    phone = input('What is your phone number?')
+    # phone = '2546447382'
 
     if not is_valid(phone):
         print('Phone number %s is invalid' % phone)
@@ -64,6 +64,17 @@ def generate_possibilities(phone, index, prev):
     return generate_possibilities(phone, index - 1, prev)
 
 
+def build_possibilities(digit, prev):
+    # poss = []
+
+    for char in keypad[int(digit)]:
+        prev.append(char)
+
+    # prev = prev + poss
+
+    return prev
+
+
 def format_vanity(phone, vanity):
     phone_part = phone[0: 10 - len(vanity)]
     new_phone = phone_part + vanity
@@ -90,4 +101,4 @@ def is_valid(phone):
     return len(phone) == 10
 
 
-main()
+# main()
