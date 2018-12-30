@@ -1,33 +1,33 @@
+import unittest
 import phonie
 
 
-def main():
-    test0()
-    test1()
-    test2()
-    test3()
+class TestPhonie(unittest.TestCase):
+
+    def test_2(self):
+        expected = ['A', 'B', 'C']
+        actual = phonie.build_possibilities('2', [])
+        self.assertEqual(expected, actual)
+
+    def test_8_2(self):
+        expected = [
+            'A',
+            'B',
+            'C',
+            'TA',
+            'UA',
+            'VA',
+            'TB',
+            'UB',
+            'VB',
+            'TC',
+            'UC',
+            'VC',
+        ]
+        actual = phonie.build_possibilities('2', [])
+        actual = phonie.build_possibilities('8', actual)
+        self.assertEqual(expected, actual)
 
 
-def test0():
-    actual = phonie.build_possibilities('0', [])
-    print(actual)
-
-
-def test1():
-    actual = phonie.build_possibilities('1', [])
-    print(actual)
-
-
-def test2():
-    actual = phonie.build_possibilities('2', [])
-    print(actual)
-
-
-def test3():
-    actual = phonie.build_possibilities('2', [])
-    actual = phonie.build_possibilities('3', actual)
-
-    print(actual)
-
-
-main()
+if __name__ == '__main__':
+    unittest.main()

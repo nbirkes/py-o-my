@@ -18,14 +18,14 @@ keypad = {
 
 
 def main():
-    phone = input('What is your phone number?')
-    # phone = '2546447382'
+    # phone = input('What is your phone number?')
+    phone = '2546447382'
 
     if not is_valid(phone):
         print('Phone number %s is invalid' % phone)
         return
 
-    poss = generate_possibilities(phone, 9, [])
+    poss = do_it(phone, 5)
     words = get_words()
     matches = get_matches(poss, words)
 
@@ -43,34 +43,28 @@ def get_words():
     return open(os.path.dirname(os.path.abspath(__file__)) + '/static/words_2.txt', 'r').read().split()
 
 
-def generate_possibilities(phone, index, prev):
-    if index < 6:
-        return prev
+def do_it(phone, num_digits):
+    sample = ''.join(reversed(phone))[0:num_digits]
+    poss = []
 
-    digit = phone[index]
+    for i in range(0, num_digits):
+        poss = build_possibilities(sample[i], poss)
+
+    return poss
+
+
+def build_possibilities(digit, prev):
+    temp = []
 
     if len(prev) == 0:
         for char in keypad[int(digit)]:
             prev.append(char)
     else:
-        new_list = []
-
-        for p in prev:
+        for poss in prev:
             for char in keypad[int(digit)]:
-                new_list.append(char + p)
+                temp.append(char + poss)
 
-        prev = prev + new_list
-
-    return generate_possibilities(phone, index - 1, prev)
-
-
-def build_possibilities(digit, prev):
-    # poss = []
-
-    for char in keypad[int(digit)]:
-        prev.append(char)
-
-    # prev = prev + poss
+    prev = prev + temp
 
     return prev
 
@@ -101,4 +95,5 @@ def is_valid(phone):
     return len(phone) == 10
 
 
-# main()
+if __name__ == '__main__':
+    main()
