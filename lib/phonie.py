@@ -16,27 +16,65 @@ keypad = {
     0: '0',
 }
 
+digit_map = {
+    0: 0,
+    1: 1,
+    'A': 2,
+    'B': 2,
+    'C': 2,
+    'D': 3,
+    'E': 3,
+    'F': 3,
+    'G': 4,
+    'H': 4,
+    'I': 4,
+    'J': 5,
+    'K': 5,
+    'L': 5,
+    'M': 6,
+    'N': 6,
+    'O': 6,
+    'P': 7,
+    'Q': 7,
+    'R': 7,
+    'S': 7,
+    'T': 8,
+    'U': 8,
+    'V': 8,
+    'W': 9,
+    'X': 9,
+    'Y': 9,
+    'Z': 9,
+}
+
 
 def main():
     # phone = input('What is your phone number?')
     phone = '2546447382'
 
-    if not is_valid(phone):
+    if not is_valid_phone(phone):
         print('Phone number %s is invalid' % phone)
         return
 
     poss = do_it(phone, 5)
-    words = get_words()
-    matches = get_matches(poss, words)
 
-    print('%s possibilities found' % len(poss))
+    for p in poss:
+        if not is_valid_vanity(p, phone):
+            print('INVALID', p)
+        else:
+            print(p)
 
-    if len(matches) == 0:
-        print('Sorry, no matches found for', phone)
-    else:
-        print('MATCHES!')
-        for match in matches:
-            print(format_vanity(phone, match))
+    # words = get_words()
+    # matches = get_matches(poss, words)
+    #
+    # print('%s possibilities found' % len(poss))
+    #
+    # if len(matches) == 0:
+    #     print('Sorry, no matches found for', phone)
+    # else:
+    #     print('MATCHES!')
+    #     for match in matches:
+    #         print(format_vanity(phone, match))
 
 
 def get_words():
@@ -62,11 +100,27 @@ def build_possibilities(digit, prev):
     else:
         for poss in prev:
             for char in keypad[int(digit)]:
-                temp.append(char + poss)
+                new_poss = char + poss
+                temp.append(new_poss)
+                # if new_poss == 'GRUB':
+                #     print(prev)
+                #     raise Exception('stop')
 
     prev = prev + temp
 
     return prev
+
+
+def is_valid_vanity(vanity, phone):
+    return phone.endswith(vanity_to_phone(vanity))
+
+
+def vanity_to_phone(vanity):
+    phone = []
+    for char in vanity:
+        phone.append(str(digit_map[char]))
+
+    return ''.join(phone)
 
 
 def format_vanity(phone, vanity):
@@ -85,7 +139,7 @@ def get_matches(possibilities, words):
     return matches
 
 
-def is_valid(phone):
+def is_valid_phone(phone):
     for c in phone:
         try:
             int(c)
