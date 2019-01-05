@@ -58,12 +58,6 @@ def main():
 
     poss = do_it(phone, 5)
 
-    for p in poss:
-        if not is_valid_vanity(p, phone):
-            print('INVALID', p)
-        else:
-            print(p)
-
     # words = get_words()
     # matches = get_matches(poss, words)
     #
@@ -84,9 +78,20 @@ def get_words():
 def do_it(phone, num_digits):
     sample = ''.join(reversed(phone))[0:num_digits]
     poss = []
+    prev = []
+    cur = []
 
     for i in range(0, num_digits):
-        poss = build_possibilities(sample[i], poss)
+        cur = build_possibilities(sample[i], prev)
+        poss.append(cur)
+        prev = cur
+        cur = []
+
+        # for p in poss:
+        #     if not is_valid_vanity(p, phone):
+        #         print('INVALID', p)
+        #     else:
+        #         print(p)
 
     return poss
 
@@ -98,14 +103,19 @@ def build_possibilities(digit, prev):
         for char in keypad[int(digit)]:
             prev.append(char)
     else:
-        for poss in prev:
-            for char in keypad[int(digit)]:
+        for char in keypad[int(digit)]:
+            for poss in prev:
                 new_poss = char + poss
                 temp.append(new_poss)
+                # print(digit, new_poss)
                 # if new_poss == 'GRUB':
                 #     print(prev)
                 #     raise Exception('stop')
 
+    print('BEGIN', digit)
+    print('PREV', prev)
+    print('TEMP', temp)
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     prev = prev + temp
 
     return prev
