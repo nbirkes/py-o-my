@@ -17,8 +17,8 @@ keypad = {
 }
 
 digit_map = {
-    0: 0,
-    1: 1,
+    '0': 0,
+    '1': 1,
     'A': 2,
     'B': 2,
     'C': 2,
@@ -49,8 +49,8 @@ digit_map = {
 
 
 def main():
-    # phone = input('What is your phone number?')
-    phone = '2546447382'
+    phone = input('What is your phone number?')
+    # phone = '2546447382'
 
     if not is_valid_phone(phone):
         print('Phone number %s is invalid' % phone)
@@ -58,17 +58,22 @@ def main():
 
     poss = do_it(phone, 5)
 
-    # words = get_words()
-    # matches = get_matches(poss, words)
-    #
-    # print('%s possibilities found' % len(poss))
-    #
-    # if len(matches) == 0:
-    #     print('Sorry, no matches found for', phone)
-    # else:
-    #     print('MATCHES!')
-    #     for match in matches:
-    #         print(format_vanity(phone, match))
+    for p in poss:
+        if not is_valid_vanity(p, phone):
+            raise Exception('Vanity is invalid %s' % p)
+
+    print(poss)
+    words = get_words()
+    matches = get_matches(poss, words)
+
+    print('%s possibilities found' % len(poss))
+
+    if len(matches) == 0:
+        print('Sorry, no matches found for', phone)
+    else:
+        print('MATCHES!')
+        for match in matches:
+            print(format_vanity(phone, match))
 
 
 def get_words():
@@ -79,21 +84,13 @@ def do_it(phone, num_digits):
     sample = ''.join(reversed(phone))[0:num_digits]
     poss = []
     prev = []
-    cur = []
 
     for i in range(0, num_digits):
         cur = build_possibilities(sample[i], prev)
         poss.append(cur)
         prev = cur
-        cur = []
 
-        # for p in poss:
-        #     if not is_valid_vanity(p, phone):
-        #         print('INVALID', p)
-        #     else:
-        #         print(p)
-
-    return poss
+    return [item for sublist in poss for item in sublist]
 
 
 def build_possibilities(digit, prev):
@@ -101,24 +98,14 @@ def build_possibilities(digit, prev):
 
     if len(prev) == 0:
         for char in keypad[int(digit)]:
-            prev.append(char)
+            temp.append(char)
     else:
         for char in keypad[int(digit)]:
             for poss in prev:
                 new_poss = char + poss
                 temp.append(new_poss)
-                # print(digit, new_poss)
-                # if new_poss == 'GRUB':
-                #     print(prev)
-                #     raise Exception('stop')
 
-    print('BEGIN', digit)
-    print('PREV', prev)
-    print('TEMP', temp)
-    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-    prev = prev + temp
-
-    return prev
+    return temp
 
 
 def is_valid_vanity(vanity, phone):
